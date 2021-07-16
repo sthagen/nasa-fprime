@@ -105,11 +105,11 @@ public:
 
     //! Deserializes this buffer from a SerializeBufferBase
     //!
-    //! This deserializes the buffer from a SerializeBufferBase, however, it DOES NOT handle srialized data. It only
+    //! This deserializes the buffer from a SerializeBufferBase, however, it DOES NOT handle serialized data. It only
     //! deserializes the pointer to said data, the size, and context. This is done for efficiency in moving around data,
     //! and is the primary usage of Fw::Buffer. To deserialize the wrapped data, use either the data pointer accessor
     //! or the serialize buffer base representation and deserialize from that.
-    //! \param serialBuffer: serialize buffer to read data into
+    //! \param buffer: serialize buffer to read data into
     //! \return: status of serialization
     Fw::SerializeStatus deserialize(Fw::SerializeBufferBase& buffer);
 
