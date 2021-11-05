@@ -61,6 +61,8 @@ Svc::LinuxTimeImpl linuxTime(FW_OPTIONAL_NAME("LTIME"));
 
 Svc::TlmChanImpl chanTlm(FW_OPTIONAL_NAME("TLM"));
 
+Svc::TlmPacketizer pktTlm(FW_OPTIONAL_NAME("PTLM"));
+
 Svc::CommandDispatcherImpl cmdDisp(FW_OPTIONAL_NAME("CMDDISP"));
 
 Fw::MallocAllocator mallocator;
@@ -114,16 +116,16 @@ bool constructApp(bool dump, U32 port_number, char* hostname) {
 
 #if FW_PORT_TRACING
     Fw::PortBase::setTrace(false);
-#endif    
+#endif
     staticMemory.init(0);
     // Initialize rate group driver
     rateGroupDriverComp.init();
 
     // Initialize the rate groups
     rateGroup1Comp.init(10,0);
-    
+
     rateGroup2Comp.init(10,1);
-    
+
     rateGroup3Comp.init(10,2);
 
     // Initialize block driver
@@ -138,10 +140,11 @@ bool constructApp(bool dump, U32 port_number, char* hostname) {
 #endif
 
     eventLogger.init(10,0);
-    
+
     linuxTime.init(0);
 
     chanTlm.init(10,0);
+    pktTlm.init(10,0);
 
     cmdDisp.init(20,0);
 
@@ -198,6 +201,7 @@ bool constructApp(bool dump, U32 port_number, char* hostname) {
     SG5.regCommands();
     health.regCommands();
     pingRcvr.regCommands();
+    pktTlm.regCommands();
 
     // read parameters
     prmDb.readParamFile();
@@ -227,6 +231,7 @@ bool constructApp(bool dump, U32 port_number, char* hostname) {
         {3,5,getHealthName(pingRcvr)}, // 10
         {3,5,getHealthName(blockDrv)}, // 11
         {3,5,getHealthName(fileManager)}, // 12
+        {3,5,getHealthName(pktTlm)}, // 13
     };
 
     // register ping table
@@ -234,34 +239,35 @@ bool constructApp(bool dump, U32 port_number, char* hostname) {
 
     // Active component startup
     // start rate groups
-    rateGroup1Comp.start(0, 120,10 * 1024);
-    rateGroup2Comp.start(0, 119,10 * 1024);
-    rateGroup3Comp.start(0, 118,10 * 1024);
+    rateGroup1Comp.start();
+    rateGroup2Comp.start();
+    rateGroup3Comp.start();
     // start driver
-    blockDrv.start(0,140,10*1024);
+    blockDrv.start();
     // start dispatcher
-    cmdDisp.start(0,101,10*1024);
+    cmdDisp.start();
     // start sequencer
-    cmdSeq.start(0,100,10*1024);
+    cmdSeq.start();
     // start telemetry
-    eventLogger.start(0,98,10*1024);
-    chanTlm.start(0,97,10*1024);
-    prmDb.start(0,96,10*1024);
+    eventLogger.start();
+    chanTlm.start();
+    pktTlm.start();
+    prmDb.start();
 
-    fileDownlink.start(0, 100, 10*1024);
-    fileUplink.start(0, 100, 10*1024);
-    fileManager.start(0, 100, 10*1024);
+    fileDownlink.start();
+    fileUplink.start();
+    fileManager.start();
 
-    pingRcvr.start(0, 100, 10*1024);
+    pingRcvr.start();
 
-   
+
 
     // Initialize socket server if and only if there is a valid specification
     if (hostname != NULL && port_number != 0) {
-        Fw::EightyCharString name("ReceiveTask");
+        Os::TaskString name("ReceiveTask");
         // Uplink is configured for receive so a socket task is started
         comm.configure(hostname, port_number);
-        comm.startSocketTask(name, 100, 10 * 1024);
+        comm.startSocketTask(name);
     }
     return false;
 }
@@ -274,6 +280,7 @@ void exitTasks(void) {
     cmdDisp.exit();
     eventLogger.exit();
     chanTlm.exit();
+    pktTlm.exit();
     prmDb.exit();
     fileUplink.exit();
     fileDownlink.exit();
@@ -288,6 +295,7 @@ void exitTasks(void) {
     (void) cmdDisp.ActiveComponentBase::join(NULL);
     (void) eventLogger.ActiveComponentBase::join(NULL);
     (void) chanTlm.ActiveComponentBase::join(NULL);
+    (void) pktTlm.ActiveComponentBase::join(NULL);
     (void) prmDb.ActiveComponentBase::join(NULL);
     (void) fileUplink.ActiveComponentBase::join(NULL);
     (void) fileDownlink.ActiveComponentBase::join(NULL);

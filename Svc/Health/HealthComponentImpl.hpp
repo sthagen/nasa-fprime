@@ -14,7 +14,7 @@
 #define Health_HPP
 
 #include <Svc/Health/HealthComponentAc.hpp>
-#include <Fw/Types/EightyCharString.hpp>
+#include <Fw/Types/String.hpp>
 
 namespace Svc {
 
@@ -22,7 +22,7 @@ namespace Svc {
     //!  \brief Health component implementation class
     //!
     //!  The health component iterates through each entry
-    //!  in its table and checks its status. If an ping entry
+    //!  in its table and checks its status. If a ping entry
     //!  tracker is enabled, it will ping its corresponding port
     //!  with a provided key. If a ping return is outstanding,
     //!  a counter is decremented, and its value is checked
@@ -45,7 +45,7 @@ namespace Svc {
             struct PingEntry {
                 NATIVE_UINT_TYPE warnCycles; //!< number of cycles before WARNING
                 NATIVE_UINT_TYPE fatalCycles; //!< number of cycles before FATAL
-                Fw::EightyCharString entryName; //!< the name of the entry
+                Fw::String entryName; //!< the name of the entry
             };
 
             //!  \brief HealthImpl constructor
