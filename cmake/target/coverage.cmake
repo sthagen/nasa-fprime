@@ -30,14 +30,6 @@
 # The following functions are used to register the _coverage targets into the target system. They
 # are required for the system to register custom targets.
 ####
-
-# Global settings for coverage
-if (FPRIME_ENABLE_UT_COVERAGE)
-    # Note: this is to prevent filenames of the form file.cpp.<extension> and instead use file.<extension> instead to appease gcov
-    set(CMAKE_C_OUTPUT_EXTENSION_REPLACE 1)
-    set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
-endif()
-
 ####
 #  Function `add_global_target`:
 #
@@ -45,7 +37,7 @@ endif()
 #
 # - **TARGET_NAME:** target name to be generated
 ####
-function(add_global_target TARGET_NAME)
+function(coverage_add_global_target TARGET_NAME)
     if (FPRIME_ENABLE_UT_COVERAGE)
         find_program(GCOV_EXE "gcov")
         if (GCOV_EXE)
@@ -54,8 +46,11 @@ function(add_global_target TARGET_NAME)
             add_custom_target(${TARGET_NAME} COMMAND ${CMAKE_COMMAND} -E echo "[WARNING] 'gcov' not found. Will not calculate coverage.")
         endif()
     endif()
-endfunction(add_global_target)
+endfunction(coverage_add_global_target)
 
+
+function(coverage_add_deployment_target MODULE_NAME TARGET_NAME SOURCE_FILES DEPENDENCIES)
+endfunction()
 
 ####
 # Dict function `add_module_target`:
@@ -67,10 +62,10 @@ endfunction(add_global_target)
 # - **SOURCE_FILES:** list of source file inputs
 # - **DEPENDENCIES:** MOD_DEPS input from CMakeLists.txt
 ####
-function(add_module_target MODULE_NAME TARGET_NAME SOURCE_FILES DEPENDENCIES)
+function(coverage_add_module_target MODULE_NAME TARGET_NAME SOURCE_FILES DEPENDENCIES)
     get_target_property(FINAL_SOURCES "${MODULE_NAME}" SOURCES)
     # Protects against multiple calls to fprime_register_ut()
-    if (TARGET ${MODULE_NAME}_${TARGET_NAME} OR NOT FINAL_SOURCES OR NOT FPRIME_ENABLE_UT_COVERAGE)
+    if (TARGET ${MODULE_NAME}_${TARGET_NAME} OR NOT FINAL_SOURCES OR NOT FPRIME_ENABLE_UT_COVERAGE OR NOT BUILD_TESTING OR NOT MODULE_TYPE STREQUAL "Unit Test")
         return()
     endif()
 
@@ -82,10 +77,10 @@ function(add_module_target MODULE_NAME TARGET_NAME SOURCE_FILES DEPENDENCIES)
         add_custom_target(
             ${MODULE_NAME}_${TARGET_NAME}
             COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_LIST_DIR}/coverage
-            COMMAND ${GCOV_EXE} -o CMakeFiles/${MODULE_NAME}.dir/ ${FINAL_SOURCES}
+            COMMAND ${GCOV_EXE} -o ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${MODULE_NAME}.dir/ ${FINAL_SOURCES}
             COMMAND ${CMAKE_COMMAND} -E copy *.gcov ${CMAKE_CURRENT_LIST_DIR}/coverage
         )
         add_dependencies(${MODULE_NAME}_${TARGET_NAME} ${MODULE_NAME}_check)
         add_dependencies(${TARGET_NAME} ${TARGET_NAME})
     endif()
-endfunction(add_module_target)
+endfunction(coverage_add_module_target)
