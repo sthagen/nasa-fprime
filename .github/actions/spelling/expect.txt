@@ -1401,6 +1401,7 @@ settime
 settingsini
 settype
 setuptools
+setvalue
 setw
 sev
 sface
@@ -1441,6 +1442,7 @@ sometask
 somevalue
 sommercharles
 soudry
+sourced
 SOURCEDIR
 sourceforge
 Sourcetrail
