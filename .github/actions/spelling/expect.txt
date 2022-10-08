@@ -204,6 +204,7 @@ commonpath
 COMPACKET
 COMPONENTTESTERIMPL
 COMSPLITTER
+COMSTUB
 Concat
 config
 configparser
@@ -655,6 +656,7 @@ inits
 initstate
 inkscape
 inode
+INOUT
 INPCK
 Inputline
 installable
