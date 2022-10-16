@@ -44,7 +44,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType,
+                    fileIdFs " %" PRI_FwAssertArgType,
                     file,
                     lineNo,
                     arg1
@@ -54,7 +54,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType " %" PRI_FwAssertArgType,
+                    fileIdFs " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType,
                     file,
                     lineNo,
                     arg1, arg2
@@ -64,7 +64,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType " %" PRI_FwAssertArgType
+                    fileIdFs " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType,
                     file,
                     lineNo,
@@ -75,7 +75,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType " %" PRI_FwAssertArgType
+                    fileIdFs " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType,
                     file,
                     lineNo,
@@ -85,7 +85,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType " %" PRI_FwAssertArgType
+                    fileIdFs " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType,
                     file,
@@ -97,7 +97,7 @@ namespace Fw {
                 (void) snprintf(
                     destBuffer,
                     buffSize,
-                    fileIdFs "%" PRI_FwAssertArgType " %" PRI_FwAssertArgType
+                    fileIdFs " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType
                       " %" PRI_FwAssertArgType " %" PRI_FwAssertArgType,
                     file,
