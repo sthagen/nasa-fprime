@@ -149,6 +149,7 @@ cdn
 cerrno
 cface
 CFDP
+cff
 cflag
 cfsetispeed
 cfsetospeed
@@ -192,6 +193,7 @@ cntx
 cobj
 CODEFILE
 codegen
+codeql
 colno
 COLORSTYLE
 colorwheel
