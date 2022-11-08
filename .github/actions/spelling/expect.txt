@@ -120,6 +120,7 @@ buf
 BUFFERALLOCATE
 BUFFERMANAGERCOMPONENTIMPLCFG
 BUFFERMGR
+BUFFQUEUEIN
 buffsize
 BUGLIST
 bugprone
@@ -205,6 +206,8 @@ commasepitem
 commonpath
 COMPACKET
 COMPONENTTESTERIMPL
+COMQUEUE
+COMQUEUEIN
 COMSPLITTER
 COMSTUB
 Concat
@@ -212,6 +215,7 @@ config
 configparser
 configs
 configurability
+constexpr
 cookiecutter
 cooldown
 coor
@@ -657,6 +661,7 @@ initfiles
 inits
 initstate
 inkscape
+inlined
 inode
 INOUT
 INPCK
@@ -871,6 +876,7 @@ mycompany
 myfile
 myproject
 mytype
+namespaced
 nano
 nanosleep
 nargs
@@ -1120,6 +1126,8 @@ reder
 refactor
 refactoring
 refspec
+REFTOPOLOGY
+REFTOPOLOGYDEFS
 regexp
 regexs
 relaxng
@@ -1519,6 +1527,7 @@ valgrind
 validator
 vals
 valud
+vbai
 venv
 VERSIONED
 versioning
