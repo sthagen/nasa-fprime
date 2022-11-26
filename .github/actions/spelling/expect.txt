@@ -211,6 +211,7 @@ COMQUEUE
 COMQUEUEIN
 COMSPLITTER
 COMSTUB
+COMXBEE
 Concat
 config
 configparser
@@ -276,6 +277,7 @@ daringfireball
 Daruwala
 DASSERT
 databinding
+DATAROOTDIR
 datastore
 dawbarton
 db
@@ -296,6 +298,7 @@ deframer
 deframing
 delchars
 delitem
+DENABLE
 deployables
 DEPRECATEDLIST
 deps
@@ -455,6 +458,7 @@ fadvise
 FAKELOGGER
 fallocate
 fallthrough
+fbuild
 fcheck
 fclose
 fcntl
@@ -518,6 +522,7 @@ frontend
 frox
 frsize
 fsanitize
+fsanitizers
 fscanf
 fstream
 fstrength
@@ -572,6 +577,7 @@ github
 gjslint
 glibc
 globals
+gmock
 gmtime
 Gnc
 Gnd
@@ -657,6 +663,7 @@ importables
 INADDR
 iname
 inbool
+INCLUDEDIR
 inet
 inin
 initfiles
@@ -673,6 +680,7 @@ instantiator
 instring
 instrlen
 integertypename
+interoperate
 intlimits
 ints
 Inttype
@@ -754,6 +762,8 @@ lhash
 libc
 libclang
 libcrc
+LIBDIR
+LIBEXECDIR
 libgtest
 libiconv
 LIBLOC
@@ -773,6 +783,7 @@ lld
 llvm
 loadfile
 localhost
+LOCALSTATEDIR
 LOCKGUARDTESTER
 locs
 LOGASSERT
@@ -943,6 +954,7 @@ odo
 oflag
 okidocki
 oldeol
+OLDINCLUDEDIR
 OMG
 onchange
 onlinepubs
@@ -1172,6 +1184,7 @@ rxor
 saddr
 Saikiran
 Sanchit
+sanitizers
 sats
 savelist
 saveop
@@ -1179,6 +1192,7 @@ saxutils
 sbb
 SBF
 sbin
+SBINDIR
 sbt
 scanf
 sched
@@ -1231,6 +1245,7 @@ sface
 sfregoso
 sgl
 SGN
+SHAREDSTATEDIR
 SHELLCOMMAND
 Shenker
 showinitializer
@@ -1343,6 +1358,7 @@ swcaegitadmin
 SYMLINKS
 synchronicity
 synopsys
+SYSCONFDIR
 SYSFS
 sysinfo
 systemd
@@ -1486,6 +1502,7 @@ typeslist
 typetoken
 tzinfo
 uart
+UBSAN
 ubuntu
 ucf
 Uchenik
@@ -1596,6 +1613,7 @@ wxgui
 Xabcdefx
 xapian
 xargs
+XBee
 xcode
 xdf
 xdffe
