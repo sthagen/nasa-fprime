@@ -236,6 +236,8 @@ Cpkt
 cplusplus
 CPOL
 cpos
+cppcheckxml
+cpplint
 cppcheck
 cppreference
 cprogramming
@@ -546,7 +548,9 @@ gbl
 gcc
 gcda
 gcgandhi
+gcno
 gcov
+gcovr
 gdb
 gdiplus
 gencode
@@ -777,6 +781,7 @@ libiconv
 LIBLOC
 lic
 lindent
+linelength
 lineno
 lineroo
 lineterm
@@ -929,6 +934,7 @@ nonblock
 noncomma
 NONINFRINGEMENT
 Nop
+noparent
 noreply
 noreturn
 normalwidths
@@ -961,6 +967,7 @@ objs
 oclc
 odl
 odo
+ofiles
 oflag
 okidocki
 oldeol
@@ -1122,6 +1129,7 @@ qtest
 qthelpproject
 Qualcomm
 quatchan
+quoteattr
 RAbrack
 radd
 RAII
@@ -1312,6 +1320,7 @@ srand
 srandom
 srange
 src
+srcs
 SRCS
 sre
 sscanf
@@ -1383,6 +1392,7 @@ synopsys
 SYSCONFDIR
 SYSFS
 sysinfo
+sysroot
 systemd
 tabbedwidths
 tabccitt
