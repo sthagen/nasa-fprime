@@ -11,7 +11,7 @@ namespace Fw {
 
     class InputPortBase : public PortBase {
         public:
-            void setPortNum(NATIVE_INT_TYPE portNum); // !< set the port number
+            void setPortNum(FwIndexType portNum); // !< set the port number
 
 #if FW_PORT_SERIALIZATION
             virtual SerializeStatus invokeSerial(SerializeBufferBase &buffer) = 0; // !< invoke the port with a serialized version of the call
@@ -24,7 +24,7 @@ namespace Fw {
             void init() override;
 
             PassiveComponentBase* m_comp; // !< pointer to containing component
-            NATIVE_INT_TYPE m_portNum; // !< port number in containing object
+            FwIndexType m_portNum; // !< port number in containing object
 #if FW_OBJECT_TO_STRING == 1
             const char* getToStringFormatString() override; //!< Get format string for toString call
 #endif
