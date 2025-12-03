@@ -20,7 +20,7 @@ Flask-Compress==1.15
 Flask-RESTful==0.3.10
 fprime-fpl-layout==1.0.3
 fprime-fpl-write-pic==1.0.3
-fprime-fpp==3.1.0a12
+fprime-fpp==3.1.0
 fprime-gds==4.0.2a11
 fprime-tools==4.0.2a2
 fprime-visual==1.0.2
@@ -61,7 +61,7 @@ tomli==2.0.1
 types-python-dateutil==2.9.0.20241003
 typing-extensions==4.12.2
 urllib3==2.5.0
-Werkzeug==3.0.6
+Werkzeug==3.1.4
 zipp==3.19.1
 zstandard==0.23.0
 pip
