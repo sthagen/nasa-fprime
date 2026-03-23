@@ -253,6 +253,9 @@ FILEHANDLINGSUBTOPOLOGY
 FILEID
 FILEMANAGERCONFIG
 FILEOPENERROR
+FILETESTER
+FILEWORKER
+FILEWORKERTYPES
 FILEWRITEERROR
 fio
 fle
@@ -467,6 +470,9 @@ NODELABEL
 noinline
 NOLINT
 NOLINTNEXTLINE
+nominaldne
+nominalread
+nominalwrite
 noparent
 norecords
 NOSPEC
@@ -574,6 +580,7 @@ qhelpgenerator
 QHG
 qhp
 qsf
+racheljt
 RAII
 randtbl
 raspberrypi
@@ -604,6 +611,7 @@ rhel
 RHH
 Rizvi
 ROOTDIR
+rowspan
 rpi
 rptr
 SAlias
@@ -710,6 +718,8 @@ testerbase
 TESTLIST
 testmark
 TESTUTILS
+testwrite
+testwriteoffset
 tfvn
 thisdirdoesnotexist
 thisfiledoesnotexist
