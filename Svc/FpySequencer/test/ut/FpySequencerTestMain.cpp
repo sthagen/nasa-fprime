@@ -3340,6 +3340,26 @@ TEST_F(FpySequencerTester, seqRunIn) {
     removeFile("test.bin");
 }
 
+TEST_F(FpySequencerTester, seqCancelIn) {
+    this->tester_setState(State::IDLE);
+    this->invoke_to_seqCancelIn(0);
+    this->tester_doDispatch();
+    // should fail if we're in IDLE
+    ASSERT_EVENTS_InvalidSeqCancelCall_SIZE(1);
+
+    dispatchCurrentMessages(cmp);
+    ASSERT_EQ(this->tester_getState(), State::IDLE);
+
+    this->clearHistory();
+    this->tester_setState(State::RUNNING_SLEEPING);
+    this->invoke_to_seqCancelIn(0);
+    this->tester_doDispatch();
+    // should go back to idle
+    dispatchUntilState(State::IDLE);
+    ASSERT_EVENTS_SequenceCancelled_SIZE(1);
+    ASSERT_from_seqDoneOut(0, 0, 0, Fw::CmdResponse::EXECUTION_ERROR);
+}
+
 TEST_F(FpySequencerTester, seqRunInArgs) {
     allocMem();
     add_LOAD_REL(0, 4);  // Load first arg (U32 at offset 0) - duplicates it on stack
