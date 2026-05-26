@@ -419,6 +419,14 @@ Examples:
 - Bounded queue logic → `Fw/DataStructures`
 - Path manipulation (dirname, basename) → `Os` or `Fw::StringUtils`
 
+#### CPP-34 — Prefer bounded `for` loops; `while` is discouraged
+
+All loops must have a provable upper bound (per JPL C coding
+standard, CPP-27). Use `for` for counted iteration so init, bound,
+and increment are collocated. `while` scatters loop control and is
+discouraged except for the program main loop (`while (true)` /
+`for (;;)` in a task entry point or dispatcher).
+
 ### F. External authoritative references
 
 #### CPP-26 — F Prime style guidelines
@@ -473,6 +481,7 @@ linked in §4 is authoritative. F Prime adopts it where applicable.
 | CPP-31 | `cpp-silent-truncation` | `**must fix**` for paths/keys/identifiers; `**could fix**` for display. |
 | CPP-32 | `cpp-ignored-return-value` | `**must fix**` for I/O/serialization; `**could fix**` for display. |
 | CPP-33 | `cpp-inlined-utility` | `**suggestion**` for one-liners; `**could fix**` for multi-line. |
+| CPP-34 | `cpp-while-loop-for-counted-iteration` / `cpp-unbounded-loop` | Two sub-classes. |
 
 Finding-class names are stable strings: they appear in the inline
 comment HTML footer (`finding-key` hash inputs). Renaming a class
@@ -506,7 +515,7 @@ is authoritative; this section narrows the decision per cluster.
 - **External references (CPP-26, 27):** default `**could fix**` for
   cosmetic style hits; `**suggestion**` when a concrete fix is
   expressible.
-- **Correctness and robustness (CPP-29, 30, 31, 32, 33):**
+- **Correctness and robustness (CPP-29, 30, 31, 32, 33, 34):**
   - CPP-29 (assert side-effects): always `**must fix**`.
   - CPP-30 (magic numbers): `**must fix**` when replacing a named
     constant with a behavioral change; `**could fix**` for new code.
@@ -518,6 +527,10 @@ is authoritative; this section narrows the decision per cluster.
     for display-only formatting.
   - CPP-33 (inlined utilities): `**suggestion**` for small
     one-liners; `**could fix**` for multi-line logic blocks.
+  - CPP-34 (while / unbounded loops): `**suggestion**` when a
+    `while` is used for simple counted iteration and the fix is a
+    mechanical conversion to `for`. `**must fix**` when a loop
+    has no provable upper bound and is not a program main loop.
 
 **Preexisting violations.** Any violation the PR did not introduce
 or widen (per `_shared/skills/pr-diff-scoping.skill.md`) is
