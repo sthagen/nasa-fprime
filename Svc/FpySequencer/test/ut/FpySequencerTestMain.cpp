@@ -274,6 +274,26 @@ TEST_F(FpySequencerTester, cmd) {
         (((tester_get_m_sequencesStarted() & 0xFFFF) << 16) | (tester_get_m_statementsDispatched() & 0xFFFF)));
 }
 
+TEST_F(FpySequencerTester, cmdStackOverflow) {
+    FpySequencer_ConstCmdDirective directive(123, 0, 0);
+    DirectiveError err = DirectiveError::NO_ERROR;
+    // fill the stack so there is no room left to push the cmd response code
+    tester_get_m_runtime_ptr()->stack.size = Fpy::MAX_STACK_SIZE;
+    Signal result = tester_constCmd_directiveHandler(directive, err);
+    ASSERT_EQ(err, DirectiveError::STACK_OVERFLOW);
+    ASSERT_EQ(result, Signal::stmtResponse_failure);
+    // the cmd should not have been dispatched
+    ASSERT_from_cmdOut_SIZE(0);
+
+    // with exactly enough room for the response code, the cmd should be dispatched
+    err = DirectiveError::NO_ERROR;
+    tester_get_m_runtime_ptr()->stack.size = Fpy::MAX_STACK_SIZE - sizeof(Fw::CmdResponse::SerialType);
+    result = tester_constCmd_directiveHandler(directive, err);
+    ASSERT_EQ(err, DirectiveError::NO_ERROR);
+    ASSERT_EQ(result, Signal::stmtResponse_keepWaiting);
+    ASSERT_from_cmdOut_SIZE(1);
+}
+
 TEST_F(FpySequencerTester, stackOp) {
     // Test EQ (equal)
     FpySequencer_StackOpDirective directiveEQ(Fpy::DirectiveId::IEQ);
@@ -2138,6 +2158,38 @@ TEST_F(FpySequencerTester, checkStatementTimeout) {
     ASSERT_EQ(result, Signal::result_checkStatementTimeout_statementTimeout);
 }
 
+TEST_F(FpySequencerTester, checkStatementTimeoutU32OverflowMissed) {
+    // Without widening getSeconds() to U64 before * 1000000, the product wraps every
+    // 2^32 us (~4294.97 s). A statement dispatched at t=0 and checked at t=4300 s then
+    // appears to have elapsed only ~5.03 s, so a 10 s timeout is missed (issue #5424).
+    Fw::Time testTime(TimeBase::TB_WORKSTATION_TIME, 0, 4300, 0);
+    setTestTime(testTime);
+
+    F32 timeout = 10;
+    paramSet_STATEMENT_TIMEOUT_SECS(timeout, Fw::ParamValid::VALID);
+    paramSend_STATEMENT_TIMEOUT_SECS(0, 0);
+
+    tester_get_m_runtime_ptr()->currentStatementDispatchTime = Fw::Time(TimeBase::TB_WORKSTATION_TIME, 0, 0, 0);
+    Signal result = tester_checkStatementTimeout();
+    ASSERT_EQ(result, Signal::result_checkStatementTimeout_statementTimeout);
+}
+
+TEST_F(FpySequencerTester, checkStatementTimeoutU32OverflowSpurious) {
+    // Crossing the 2^32-us product boundary (4294 s → 4295 s) makes the wrapped current
+    // value smaller than dispatch; U64 subtraction underflows to a huge elapsed time and
+    // spuriously times out a 1 s wait under a 10 s timeout (issue #5424).
+    Fw::Time testTime(TimeBase::TB_WORKSTATION_TIME, 0, 4295, 0);
+    setTestTime(testTime);
+
+    F32 timeout = 10;
+    paramSet_STATEMENT_TIMEOUT_SECS(timeout, Fw::ParamValid::VALID);
+    paramSend_STATEMENT_TIMEOUT_SECS(0, 0);
+
+    tester_get_m_runtime_ptr()->currentStatementDispatchTime = Fw::Time(TimeBase::TB_WORKSTATION_TIME, 0, 4294, 0);
+    Signal result = tester_checkStatementTimeout();
+    ASSERT_EQ(result, Signal::result_checkStatementTimeout_noTimeout);
+}
+
 TEST_F(FpySequencerTester, checkStatementTimeoutMismatchBase) {
     Fw::Time testTime(TimeBase::TB_WORKSTATION_TIME, 0, 300, 100);
     setTestTime(testTime);
@@ -3091,6 +3143,23 @@ TEST_F(FpySequencerTester, seqBaseDir_emptyKeepsRawPath) {
     removeFile("test.bin");
 }
 
+TEST_F(FpySequencerTester, validate_emptySequenceFilePath) {
+    allocMem();
+    paramSet_SEQ_BASE_DIR(Fw::ParamString(""), Fw::ParamValid::VALID);
+    paramSend_SEQ_BASE_DIR(0, 0);
+    this->clearHistory();
+
+    sendCmd_VALIDATE(0, 0, Fw::String(""));
+    dispatchUntilState(State::VALIDATING);
+    dispatchUntilState(State::IDLE);
+
+    ASSERT_EVENTS_FileOpenError_SIZE(1);
+    ASSERT_EQ(this->eventHistory_FileOpenError->at(0).filePath, Fw::LogStringArg(""));
+    ASSERT_EQ(this->eventHistory_FileOpenError->at(0).errorCode, static_cast<I32>(Os::File::INVALID_ARGUMENT));
+    ASSERT_CMD_RESPONSE_SIZE(1);
+    ASSERT_CMD_RESPONSE(0, Svc::FpySequencerTester::get_OPCODE_VALIDATE(), 0, Fw::CmdResponse::EXECUTION_ERROR);
+}
+
 TEST_F(FpySequencerTester, seqBaseDir_fileOpenLogsResolvedPath) {
     // a base dir that doesn't exist makes file open fail. the FileOpenError
     // event should report the fully resolved path, not the user-supplied one
@@ -3605,6 +3674,26 @@ TEST_F(FpySequencerTester, deserialize_popEvent) {
     seq.get_statements()[0].get_argBuf().resetSer();
     result = tester_deserializeDirective(seq.get_statements()[0], actual);
     ASSERT_EQ(result, Fw::Success::SUCCESS);
+}
+
+TEST_F(FpySequencerTester, deserialize_popSerializable) {
+    FpySequencer::DirectiveUnion actual;
+    FpySequencer_PopSerializableDirective popSerializable(0, 4);
+    add_POP_SERIALIZABLE(popSerializable);
+    Fw::Success result = tester_deserializeDirective(seq.get_statements()[0], actual);
+    ASSERT_EQ(result, Fw::Success::SUCCESS);
+    ASSERT_EQ(actual.popSerializable, popSerializable);
+    // write some junk after buf, make sure it fails
+    seq.get_statements()[0].get_argBuf().serializeFrom(123);
+    result = tester_deserializeDirective(seq.get_statements()[0], actual);
+    ASSERT_EQ(result, Fw::Success::FAILURE);
+    ASSERT_EVENTS_DirectiveDeserializeError_SIZE(1);
+    this->clearHistory();
+    // clear args, make sure it fails
+    seq.get_statements()[0].get_argBuf().resetSer();
+    result = tester_deserializeDirective(seq.get_statements()[0], actual);
+    ASSERT_EQ(result, Fw::Success::FAILURE);
+    ASSERT_EVENTS_DirectiveDeserializeError_SIZE(1);
 }
 
 // caught a bug
